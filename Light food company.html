@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIGHT Foods | Order Online</title>
+    <style>
+        :root {
+            --primary: #ff6347;
+            --primary-dark: #e04a2a;
+            --surface: #ffffff;
+            --surface-strong: #f7f3ef;
+            --text: #222222;
+            --muted: #666666;
+            --border: #e5e0db;
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Arial, sans-serif;
+            background: #f5f0eb;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(255, 99, 71, 0.12), transparent 26%),
+                        radial-gradient(circle at bottom right, rgba(255, 150, 120, 0.12), transparent 30%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 1rem 1.5rem;
+            background: linear-gradient(135deg, #ff7b59 0%, #ff6347 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: clamp(2rem, 3vw, 3rem);
+            letter-spacing: 0.02em;
+        }
+
+        header p {
+            margin: 0.75rem auto 1.5rem;
+            max-width: 640px;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        nav {
+            margin-top: 1rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 0.9rem;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
+        }
+
+        nav a:hover,
+        nav a:focus-visible {
+            opacity: 0.85;
+        }
+
+        .primary-button,
+        .secondary-button {
+            border: none;
+            border-radius: 999px;
+            padding: 0.95rem 1.8rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.25s ease, background-color 0.25s ease;
+        }
+
+        .primary-button {
+            background: var(--surface);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .primary-button:hover,
+        .primary-button:focus-visible {
+            transform: translateY(-1px);
+            background: #fff;
+            outline: none;
+        }
+
+        .page-container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 2rem 1rem 3rem;
+        }
+
+        .hero {
+            margin: 1.5rem auto 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: 0 18px 40px rgba(29, 18, 11, 0.07);
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .hero h2 {
+            margin: 0;
+            font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+        }
+
+        .hero p {
+            margin: 0;
+            color: var(--muted);
+            max-width: 680px;
+        }
+
+        .section-title {
+            margin-bottom: 1rem;
+            font-size: 1.75rem;
+            text-align: center;
+            color: var(--text);
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1.75rem;
+        }
+
+        .menu-tab {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 0.9rem 1.3rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .menu-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .menu-grid {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+
+        .food-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 1.35rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 220px;
+            box-shadow: 0 12px 28px rgba(13, 9, 6, 0.04);
+        }
+
+        .food-item h4 {
+            margin: 0 0 0.55rem;
+            font-size: 1.2rem;
+        }
+
+        .food-item p {
+            margin: 0 0 1.25rem;
+            color: var(--muted);
+        }
+
+        .food-item button {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+        }
+
+        .food-item button:hover {
+            background: var(--primary-dark);
+        }
+
+        .order-panel,
+        .info-panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.75rem;
+            box-shadow: 0 16px 32px rgba(20, 12, 6, 0.06);
+            margin-top: 1.5rem;
+        }
+
+        .order-panel p,
+        .info-panel p {
+            margin: 0.5rem 0;
+        }
+
+        #cart {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.9rem 1rem;
+            border-radius: 16px;
+            background: var(--surface-strong);
+        }
+
+        .cart-item button {
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            border-radius: 999px;
+            padding: 0.55rem 0.9rem;
+            font-size: 0.9rem;
+        }
+
+        .cart-item button:hover {
+            background: #fff4f0;
+            border-color: var(--primary);
+        }
+
+        .order-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-weight: 700;
+        }
+
+        .info-panel strong {
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .auth-panel {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 20;
+            padding: 1rem;
+        }
+
+        .auth-panel.open {
+            display: flex;
+        }
+
+        .auth-dialog {
+            width: min(460px, 100%);
+            background: white;
+            border-radius: 28px;
+            padding: 1.75rem;
+            box-shadow: 0 26px 60px rgba(18, 14, 10, 0.18);
+            position: relative;
+        }
+
+        .auth-dialog h2 {
+            margin-top: 0;
+        }
+
+        .auth-toggle {
+            display: flex;
+            justify-content: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .auth-toggle button {
+            flex: 1;
+            border-radius: 999px;
+            padding: 0.85rem 1rem;
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .auth-toggle button.active {
+            background: var(--primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .auth-dialog form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .auth-dialog input {
+            width: 100%;
+            padding: 0.95rem 1rem;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            font: inherit;
+        }
+
+        .auth-dialog .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            font-size: 1.6rem;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .auth-dialog .message {
+            color: #1a7a15;
+            min-height: 1.35rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .auth-social {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .auth-social button {
+            width: 100%;
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 14px;
+            padding: 0.95rem 1rem;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .auth-social button:hover {
+            background: #fff;
+        }
+
+        .auth-social button.google { color: #1a73e8; }
+        .auth-social button.facebook { color: #1877f2; }
+        .auth-social button.apple { color: #000; }
+
+        @media (max-width: 720px) {
+            .hero,
+            .order-panel,
+            .auth-dialog {
+                padding: 1.3rem;
+            }
+
+            nav a {
+                margin: 0 0.6rem;
+            }
+
+            .order-summary {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LIGHT Foods</h1>
+        <p>Fast, fresh, and delivered from our kitchen to your table. Explore menu favorites and order in seconds.</p>
+        <nav aria-label="Primary navigation">
+            <a href="#menu">Menu</a>
+            <a href="#order">Order</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <button id="authOpenBtn" class="primary-button" type="button">Login / Signup</button>
+    </header>
+
+    <main class="page-container">
+        <section class="hero" aria-labelledby="hero-title">
+            <div>
+                <h2 id="hero-title">Delicious meals, simple ordering</h2>
+                <p>Choose from fresh mains, snacks, drinks, and desserts. Log in once, add your location, then build your order with confidence.</p>
+            </div>
+            <div class="info-panel">
+                <strong>Why customers love LIGHT Foods</strong>
+                <p>Easy ordering experience, friendly support, and fast delivery for every meal of the day.</p>
+            </div>
+        </section>
+
+        <section id="menu" aria-labelledby="menu-title">
+            <h2 class="section-title" id="menu-title">Our Menu</h2>
+            <div class="tabs" role="tablist">
+                <button type="button" class="menu-tab active" data-category="main">Main Dishes</button>
+                <button type="button" class="menu-tab" data-category="sides">Sides</button>
+                <button type="button" class="menu-tab" data-category="snacks">Snacks</button>
+                <button type="button" class="menu-tab" data-category="drinks">Drinks</button>
+                <button type="button" class="menu-tab" data-category="juice">Juice</button>
+                <button type="button" class="menu-tab" data-category="desserts">Desserts</button>
+            </div>
+            <div id="menuContent" class="menu-grid" aria-live="polite"></div>
+        </section>
+
+        <section id="order" aria-labelledby="order-title">
+            <h2 class="section-title" id="order-title">Your Order</h2>
+            <div class="order-panel">
+                <div id="cart"></div>
+                <div class="order-summary">
+                    <span>Total:</span>
+                    <strong>$<span id="total">0</span></strong>
+                </div>
+                <button id="checkoutBtn" class="primary-button" type="button">Checkout</button>
+                <p id="orderMessage" style="color: #c53030; min-height: 1.25rem;"></p>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <p>Contact us at <a href="mailto:otegbeyebilal@gmail.com">otegbeyebilal@gmail.com</a> or call <a href="tel:+2349079143875">+234 907 914 3875</a>.</p>
+    </footer>
+
+    <div id="authPanel" class="auth-panel" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+        <div class="auth-dialog">
+            <button class="close-button" type="button" aria-label="Close authentication panel" onclick="closeAuthPanel()">×</button>
+            <div class="auth-toggle">
+                <button id="loginTab" type="button" class="active">Login</button>
+                <button id="signupTab" type="button">Signup</button>
+            </div>
+            <div class="auth-social">
+                <button type="button" class="google" id="googleSignIn">Continue with Google</button>
+                <button type="button" class="facebook" id="facebookSignIn">Continue with Facebook</button>
+                <button type="button" class="apple" id="appleSignIn">Continue with Apple</button>
+            </div>
+            <div id="loginFormDiv">
+                <h2 id="auth-title">Login</h2>
+                <form id="loginForm">
+                    <input type="text" id="loginUsername" placeholder="Username" required autocomplete="username">
+                    <input type="text" id="loginLocation" placeholder="Location" required autocomplete="street-address">
+                    <button class="primary-button" type="submit">Login</button>
+                </form>
+            </div>
+            <div id="signupFormDiv" class="hidden">
+                <h2 id="auth-title">Signup</h2>
+                <form id="signupForm">
+                    <input type="text" id="signupUsername" placeholder="Username" required autocomplete="username">
+                    <input type="text" id="signupLocation" placeholder="Location" required autocomplete="street-address">
+                    <button class="primary-button" type="submit">Signup</button>
+                </form>
+            </div>
+            <p id="authMessage" class="message"></p>
+        </div>
+    </div>
+
+    <script>
+        const menuItems = {
+            main: [
+                { name: 'Pizza', price: 10 },
+                { name: 'Burger', price: 5 },
+                { name: 'Pasta', price: 8 },
+                { name: 'Rice', price: 7 },
+                { name: 'Chicken', price: 12 }
+            ],
+            sides: [
+                { name: 'Salad', price: 6 },
+                { name: 'Fries', price: 4 }
+            ],
+            snacks: [
+                { name: 'Chin Chin', price: 3 },
+                { name: 'Meat Pie', price: 4 },
+                { name: 'Spring Rolls', price: 5 }
+            ],
+            drinks: [
+                { name: 'Soft Drink', price: 3 },
+                { name: 'Water', price: 2 }
+            ],
+            juice: [
+                { name: 'Orange Juice', price: 4 },
+                { name: 'Apple Juice', price: 4 },
+                { name: 'Pineapple Juice', price: 5 }
+            ],
+            desserts: [
+                { name: 'Ice Cream', price: 5 },
+                { name: 'Cake', price: 6 }
+            ]
+        };
+
+        let cart = [];
+        let total = 0;
+        let signedIn = false;
+        let userLocation = "";
+        let username = "";
+
+        function showAuthTab(tab) {
+            const loginTab = document.getElementById('loginTab');
+            const signupTab = document.getElementById('signupTab');
+            const loginFormDiv = document.getElementById('loginFormDiv');
+            const signupFormDiv = document.getElementById('signupFormDiv');
+
+            const isLogin = tab === 'login';
+            loginTab.classList.toggle('active', isLogin);
+            signupTab.classList.toggle('active', !isLogin);
+            loginFormDiv.classList.toggle('hidden', !isLogin);
+            signupFormDiv.classList.toggle('hidden', isLogin);
+            document.getElementById('authMessage').textContent = '';
+        }
+
+        function openAuthPanel() {
+            document.getElementById('authPanel').classList.add('open');
+            showAuthTab('login');
+        }
+
+        function closeAuthPanel() {
+            document.getElementById('authPanel').classList.remove('open');
+        }
+
+        function updateCartMessage(message = '') {
+            document.getElementById('orderMessage').textContent = message;
+        }
+
+        function login(event) {
+            event.preventDefault();
+            username = document.getElementById('loginUsername').value.trim();
+            userLocation = document.getElementById('loginLocation').value.trim();
+            if (!username || !userLocation) return;
+            signedIn = true;
+            document.getElementById('authMessage').textContent = `Welcome, ${username}! Location: ${userLocation}`;
+            setTimeout(closeAuthPanel, 900);
+        }
+
+        function socialSignIn(provider) {
+            signedIn = true;
+            username = `${provider} user`;
+            userLocation = 'Linked account location';
+            document.getElementById('authMessage').textContent = `Signed in with ${provider}.`;
+            setTimeout(closeAuthPanel, 900);
+        }
+
+        function signup(event) {
+            event.preventDefault();
+            username = document.getElementById('signupUsername').value.trim();
+            userLocation = document.getElementById('signupLocation').value.trim();
+            if (!username || !userLocation) return;
+            signedIn = true;
+            document.getElementById('authMessage').textContent = `Signup successful! Welcome, ${username}.`;
+            setTimeout(closeAuthPanel, 900);
+        }
+
+        function showMenuCategory(category) {
+            const tabs = document.querySelectorAll('.menu-tab');
+            tabs.forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+
+            const menuContent = document.getElementById('menuContent');
+            menuContent.innerHTML = menuItems[category].map(item => `
+                <article class="food-item">
+                    <div>
+                        <h4>${item.name}</h4>
+                        <p>Price: $${item.price}</p>
+                    </div>
+                    <button type="button" onclick="addToCart('${item.name}', ${item.price})">Add to Cart</button>
+                </article>
+            `).join('');
+        }
+
+        function addToCart(item, price) {
+            if (!signedIn) {
+                updateCartMessage('Please login or signup before ordering.');
+                openAuthPanel();
+                return;
+            }
+            cart.push({ item, price });
+            total += price;
+            displayCart();
+            updateCartMessage('Item added to cart.');
+        }
+
+        function displayCart() {
+            const cartDiv = document.getElementById('cart');
+            if (!cart.length) {
+                cartDiv.innerHTML = '<p>Your cart is empty. Add favorites from the menu.</p>';
+                document.getElementById('total').textContent = 0;
+                return;
+            }
+            cartDiv.innerHTML = cart.map((product, index) => `
+                <div class="cart-item">
+                    <span>${product.item} - $${product.price}</span>
+                    <button type="button" onclick="removeItem(${index})">Remove</button>
+                </div>
+            `).join('');
+            document.getElementById('total').textContent = total;
+        }
+
+        function removeItem(index) {
+            total -= cart[index].price;
+            cart.splice(index, 1);
+            displayCart();
+            updateCartMessage('Item removed from cart.');
+        }
+
+        function checkout() {
+            if (!signedIn) {
+                updateCartMessage('Please login or signup before ordering.');
+                openAuthPanel();
+                return;
+            }
+            if (cart.length === 0) {
+                updateCartMessage('Your cart is empty. Add items before checkout.');
+                return;
+            }
+            alert(`Thank you for your order, ${username}! Total: $${total}. Delivery to: ${userLocation}`);
+            cart = [];
+            total = 0;
+            displayCart();
+            updateCartMessage('Order placed successfully.');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('authOpenBtn').addEventListener('click', openAuthPanel);
+            document.getElementById('loginTab').addEventListener('click', () => showAuthTab('login'));
+            document.getElementById('signupTab').addEventListener('click', () => showAuthTab('signup'));
+            document.getElementById('loginForm').addEventListener('submit', login);
+            document.getElementById('signupForm').addEventListener('submit', signup);
+            document.getElementById('googleSignIn').addEventListener('click', () => socialSignIn('Google'));
+            document.getElementById('facebookSignIn').addEventListener('click', () => socialSignIn('Facebook'));
+            document.getElementById('appleSignIn').addEventListener('click', () => socialSignIn('Apple'));
+            document.getElementById('checkoutBtn').addEventListener('click', checkout);
+            document.querySelectorAll('.menu-tab').forEach(tab => {
+                tab.addEventListener('click', () => showMenuCategory(tab.dataset.category));
+            });
+            showMenuCategory('main');
+            displayCart();
+        });
+    </script>
+</body>
+</html>
